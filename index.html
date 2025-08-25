@@ -2,26 +2,97 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Dépenses" />
+  <meta name="theme-color" content="#8B5CF6" />
   <title>Calculette Dépenses</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h2>Calculette Dépenses</h2>
-  <div>
-    <label>Dépense commune (€)</label>
-    <input type="number" id="commune" />
+  <div class="app">
+    <header>
+      <h1>💰 Dépenses</h1>
+      <p class="sub">Calculateur de dépenses communes et personnelles</p>
+    </header>
+    
+    <main>
+      <form class="form-grid" onsubmit="ajouterDepense(event)">
+        <div class="input-group">
+          <label for="commune" class="label">Dépense commune</label>
+          <input 
+            type="number" 
+            id="commune" 
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0,00"
+            autocomplete="off"
+          />
+        </div>
+        
+        <div class="input-group">
+          <label for="personnelle" class="label">Dépense personnelle</label>
+          <input 
+            type="number" 
+            id="personnelle" 
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0,00"
+            autocomplete="off"
+          />
+        </div>
+        
+        <button type="submit" class="add-button">
+          <span class="button-text">Ajouter</span>
+          <span class="button-icon">+</span>
+        </button>
+      </form>
+      
+      <div class="totals">
+        <div class="total-card commune">
+          <div class="label">Total commune</div>
+          <div class="amount">
+            <span id="totalCommune">0,00</span>
+            <span class="currency">€</span>
+          </div>
+        </div>
+        
+        <div class="total-card personnelle">
+          <div class="label">Total personnelle</div>
+          <div class="amount">
+            <span id="totalPersonnelle">0,00</span>
+            <span class="currency">€</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="actions">
+        <button type="button" class="reset-button" onclick="resetTotals()">
+          Remettre à zéro
+        </button>
+      </div>
+    </main>
   </div>
-  <div>
-    <label>Dépense personnelle (€)</label>
-    <input type="number" id="personnelle" />
-  </div>
-  <button onclick="ajouterDepense()">Ajouter</button>
-  <div>
-    <p>Total commune : <span id="totalCommune">0</span> €</p>
-    <p>Total personnelle : <span id="totalPersonnelle">0</span> €</p>
-  </div>
+  
   <script src="script.js"></script>
+  <script>
+    // Register service worker for PWA functionality
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(function(registration) {
+            console.log('SW registered: ', registration);
+          })
+          .catch(function(registrationError) {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
