@@ -87,7 +87,8 @@ body {
 /* ============ App container ============ */
 .app {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  max-height: 90vh;
   background: var(--surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -95,6 +96,8 @@ body {
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-strong);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   
   /* iPhone-specific optimizations */
   will-change: transform;
@@ -102,10 +105,11 @@ body {
 }
 
 .app header {
-  padding: 24px 24px 16px 24px;
+  padding: 20px 24px 16px 24px;
   text-align: center;
   background: linear-gradient(135deg, var(--surface), hsl(0 0% 100% / 0.7));
   border-bottom: 1px solid var(--outline);
+  flex-shrink: 0;
 }
 
 .app h1 {
@@ -124,7 +128,10 @@ body {
 }
 
 .app main {
-  padding: 24px;
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ============ Form and inputs ============ */
@@ -353,6 +360,121 @@ input[type="number"]:focus-visible {
 .actions {
   padding-top: 8px;
   border-top: 1px solid var(--outline);
+  margin-top: 24px;
+}
+
+/* ============ Person Sections ============ */
+.person-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  border: 2px solid var(--outline);
+  border-radius: var(--radius-large);
+  background: linear-gradient(135deg, hsl(0 0% 100% / 0.8), hsl(0 0% 100% / 0.6));
+  box-shadow: 0 4px 16px hsl(0 0% 0% / 0.08);
+}
+
+.julie-section {
+  border-color: color-mix(in lch, hsl(340 74% 55%), transparent 70%);
+}
+
+.paul-section {
+  border-color: color-mix(in lch, hsl(200 74% 55%), transparent 70%);
+}
+
+.person-title {
+  margin: 0 0 20px 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.julie-section .person-title {
+  color: hsl(340 74% 45%);
+}
+
+.paul-section .person-title {
+  color: hsl(200 74% 45%);
+}
+
+/* Specific styling for personal expense cards */
+.paul-on-julie {
+  border-color: color-mix(in lch, hsl(200 74% 55%), transparent 70%);
+}
+
+.julie-on-paul {
+  border-color: color-mix(in lch, hsl(340 74% 55%), transparent 70%);
+}
+
+/* ============ Summary Section ============ */
+.summary-section {
+  margin: 32px 0 24px 0;
+  padding: 24px;
+  border: 3px solid var(--primary-light);
+  border-radius: var(--radius-large);
+  background: linear-gradient(135deg, var(--primary-light), color-mix(in lch, var(--primary), transparent 90%));
+}
+
+.summary-title {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--primary-700);
+}
+
+.summary-totals {
+  margin-bottom: 0;
+}
+
+.total-card.global {
+  border-width: 3px;
+  font-weight: 600;
+}
+
+.total-card.global.commune {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, hsl(0 0% 100%), color-mix(in lch, var(--primary), transparent 95%));
+}
+
+.total-card.global.balance {
+  position: relative;
+}
+
+.total-card.global.balance.balanced {
+  border-color: hsl(120 74% 55%);
+  background: linear-gradient(135deg, hsl(0 0% 100%), color-mix(in lch, hsl(120 74% 55%), transparent 95%));
+}
+
+.total-card.global.balance.owes-julie {
+  border-color: hsl(340 74% 55%);
+  background: linear-gradient(135deg, hsl(0 0% 100%), color-mix(in lch, hsl(340 74% 55%), transparent 95%));
+}
+
+.total-card.global.balance.owes-paul {
+  border-color: hsl(200 74% 55%);
+  background: linear-gradient(135deg, hsl(0 0% 100%), color-mix(in lch, hsl(200 74% 55%), transparent 95%));
+}
+
+.balance-info {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+.total-card.global.balance.balanced .balance-info {
+  color: hsl(120 74% 45%);
+}
+
+.total-card.global.balance.owes-julie .balance-info {
+  color: hsl(340 74% 45%);
+}
+
+.total-card.global.balance.owes-paul .balance-info {
+  color: hsl(200 74% 45%);
 }
 
 /* ============ iPhone-specific optimizations ============ */

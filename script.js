@@ -1,49 +1,144 @@
-let totalCommune = 0;
-let totalPersonnelle = 0;
+// Data structure for Julie and Paul
+let data = {
+  julie: {
+    commune: 0,
+    personnelle: 0, // Paul's personal expenses on Julie's account
+  },
+  paul: {
+    commune: 0,
+    personnelle: 0, // Julie's personal expenses on Paul's account
+  },
+};
 
 // Load saved data from localStorage
 function loadData() {
   const savedData = localStorage.getItem("depenses-data");
   if (savedData) {
-    const data = JSON.parse(savedData);
-    totalCommune = data.totalCommune || 0;
-    totalPersonnelle = data.totalPersonnelle || 0;
+    const parsedData = JSON.parse(savedData);
+
+    // Handle legacy data format
+    if (parsedData.totalCommune !== undefined) {
+      // Legacy format - convert to new structure
+      data.julie.commune = parsedData.totalCommune || 0;
+      data.julie.personnelle = parsedData.totalPersonnelle || 0;
+      data.paul.commune = 0;
+      data.paul.personnelle = 0;
+    } else {
+      // New format
+      data = {
+        julie: {
+          commune: parsedData.julie?.commune || 0,
+          personnelle: parsedData.julie?.personnelle || 0,
+        },
+        paul: {
+          commune: parsedData.paul?.commune || 0,
+          personnelle: parsedData.paul?.personnelle || 0,
+        },
+      };
+    }
     updateDisplay();
   }
 }
 
 // Save data to localStorage
 function saveData() {
-  const data = {
-    totalCommune: totalCommune,
-    totalPersonnelle: totalPersonnelle,
+  const saveData = {
+    ...data,
     lastUpdated: new Date().toISOString(),
   };
-  localStorage.setItem("depenses-data", JSON.stringify(data));
+  localStorage.setItem("depenses-data", JSON.stringify(saveData));
 }
 
 // Update display with French number formatting
 function updateDisplay() {
-  document.getElementById("totalCommune").textContent =
-    totalCommune.toLocaleString("fr-FR", {
+  // Julie's totals
+  document.getElementById("totalCommune-julie").textContent =
+    data.julie.commune.toLocaleString("fr-FR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-  document.getElementById("totalPersonnelle").textContent =
-    totalPersonnelle.toLocaleString("fr-FR", {
+  document.getElementById("totalPersonnelle-julie").textContent =
+    data.julie.personnelle.toLocaleString("fr-FR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
+
+  // Paul's totals
+  document.getElementById("totalCommune-paul").textContent =
+    data.paul.commune.toLocaleString("fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  document.getElementById("totalPersonnelle-paul").textContent =
+    data.paul.personnelle.toLocaleString("fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  // Global totals
+  const totalCommuneGlobal = data.julie.commune + data.paul.commune;
+  document.getElementById("totalCommuneGlobal").textContent =
+    totalCommuneGlobal.toLocaleString("fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  // Balance calculation with 50/50 common expenses and 100% personal refunds
+
+  // Calculate what each person should pay for common expenses (50/50 split)
+  const eachPersonShouldPayCommon = totalCommuneGlobal / 2;
+
+  // Calculate how much each person actually paid for common expenses
+  const julieActuallyPaidCommon = data.julie.commune;
+  const paulActuallyPaidCommon = data.paul.commune;
+
+  // Calculate common expense balance (positive = Julie overpaid, negative = Paul overpaid)
+  const commonExpenseBalance =
+    julieActuallyPaidCommon - eachPersonShouldPayCommon;
+
+  // Personal expenses to be refunded 100%
+  const paulOwesJuliePersonal = data.julie.personnelle; // Paul's personal expenses on Julie's account
+  const julieOwesPaulPersonal = data.paul.personnelle; // Julie's personal expenses on Paul's account
+
+  // Final balance calculation:
+  // Positive = Paul owes Julie, Negative = Julie owes Paul
+  const finalBalance =
+    commonExpenseBalance + paulOwesJuliePersonal - julieOwesPaulPersonal;
+
+  const balanceElement = document.getElementById("balanceAmount");
+  const balanceInfoElement = document.getElementById("balanceInfo");
+
+  balanceElement.textContent = Math.abs(finalBalance).toLocaleString("fr-FR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  if (finalBalance > 0.01) {
+    // Paul owes Julie
+    balanceInfoElement.textContent = "Paul doit envoyer à Julie";
+    balanceElement.parentElement.parentElement.className =
+      "total-card global balance owes-julie";
+  } else if (finalBalance < -0.01) {
+    // Julie owes Paul
+    balanceInfoElement.textContent = "Julie doit envoyer à Paul";
+    balanceElement.parentElement.parentElement.className =
+      "total-card global balance owes-paul";
+  } else {
+    // Balanced (within 1 cent)
+    balanceInfoElement.textContent = "Parfaitement équilibré";
+    balanceElement.parentElement.parentElement.className =
+      "total-card global balance balanced";
+  }
 }
 
 // Add expense function with improved iPhone UX
-function ajouterDepense(event) {
+function ajouterDepense(event, person) {
   if (event) {
     event.preventDefault();
   }
 
-  const communeInput = document.getElementById("commune");
-  const personnelleInput = document.getElementById("personnelle");
+  const communeInput = document.getElementById(`commune-${person}`);
+  const personnelleInput = document.getElementById(`personnelle-${person}`);
 
   const commune = parseFloat(communeInput.value) || 0;
   const personnelle = parseFloat(personnelleInput.value) || 0;
@@ -51,7 +146,7 @@ function ajouterDepense(event) {
   // Check if at least one field has a value
   if (commune === 0 && personnelle === 0) {
     // Add subtle shake animation for feedback
-    const form = document.querySelector(".form-grid");
+    const form = event.target.closest(".form-grid");
     form.style.animation = "shake 0.3s ease-in-out";
     setTimeout(() => {
       form.style.animation = "";
@@ -59,8 +154,9 @@ function ajouterDepense(event) {
     return;
   }
 
-  totalCommune += commune;
-  totalPersonnelle += personnelle;
+  // Add to the appropriate person's data
+  data[person].commune += commune;
+  data[person].personnelle += personnelle;
 
   updateDisplay();
   saveData();
@@ -81,13 +177,21 @@ function ajouterDepense(event) {
 // Reset totals function
 function resetTotals() {
   if (confirm("Êtes-vous sûr de vouloir remettre tous les totaux à zéro ?")) {
-    totalCommune = 0;
-    totalPersonnelle = 0;
+    data = {
+      julie: {
+        commune: 0,
+        personnelle: 0,
+      },
+      paul: {
+        commune: 0,
+        personnelle: 0,
+      },
+    };
     updateDisplay();
     saveData();
 
     // Focus on first input
-    document.getElementById("commune").focus();
+    document.getElementById("commune-julie").focus();
 
     // Haptic feedback for reset
     if (navigator.vibrate) {
@@ -115,7 +219,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Allow Enter key to submit
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        ajouterDepense();
+        // Find which person's form this input belongs to
+        const form = this.closest("form");
+        const person = form.getAttribute("onsubmit").includes("julie")
+          ? "julie"
+          : "paul";
+        ajouterDepense(e, person);
       }
     });
   });
@@ -129,11 +238,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Handle form submission
-  const form = document.querySelector("form");
-  if (form) {
-    form.addEventListener("submit", ajouterDepense);
-  }
+  // Handle form submission for both forms
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const person = this.getAttribute("onsubmit").includes("julie")
+        ? "julie"
+        : "paul";
+      ajouterDepense(e, person);
+    });
+  });
 
   // Add PWA-like behavior - prevent pull-to-refresh
   let startY = 0;

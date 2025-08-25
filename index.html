@@ -20,56 +20,140 @@
     </header>
     
     <main>
-      <form class="form-grid" onsubmit="ajouterDepense(event)">
-        <div class="input-group">
-          <label for="commune" class="label">Dépense commune</label>
-          <input 
-            type="number" 
-            id="commune" 
-            inputmode="decimal"
-            step="0.01"
-            min="0"
-            placeholder="0,00"
-            autocomplete="off"
-          />
-        </div>
+      <!-- Section Julie -->
+      <section class="person-section julie-section">
+        <h2 class="person-title">👩‍💼 Julie</h2>
+        <form class="form-grid" onsubmit="ajouterDepense(event, 'julie')">
+          <div class="input-group">
+            <label for="commune-julie" class="label">Dépense commune</label>
+            <input 
+              type="number" 
+              id="commune-julie" 
+              inputmode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+              autocomplete="off"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="personnelle-julie" class="label">Dépenses perso de Paul</label>
+            <input 
+              type="number" 
+              id="personnelle-julie" 
+              inputmode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+              autocomplete="off"
+            />
+          </div>
+          
+          <button type="submit" class="add-button">
+            <span class="button-text">Ajouter</span>
+            <span class="button-icon">+</span>
+          </button>
+        </form>
         
-        <div class="input-group">
-          <label for="personnelle" class="label">Dépense personnelle</label>
-          <input 
-            type="number" 
-            id="personnelle" 
-            inputmode="decimal"
-            step="0.01"
-            min="0"
-            placeholder="0,00"
-            autocomplete="off"
-          />
-        </div>
-        
-        <button type="submit" class="add-button">
-          <span class="button-text">Ajouter</span>
-          <span class="button-icon">+</span>
-        </button>
-      </form>
-      
-      <div class="totals">
-        <div class="total-card commune">
-          <div class="label">Total commune</div>
-          <div class="amount">
-            <span id="totalCommune">0,00</span>
-            <span class="currency">€</span>
+        <div class="totals">
+          <div class="total-card commune">
+            <div class="label">Total commune</div>
+            <div class="amount">
+              <span id="totalCommune-julie">0,00</span>
+              <span class="currency">€</span>
+            </div>
+          </div>
+          
+          <div class="total-card personnelle paul-on-julie">
+            <div class="label">Paul chez Julie</div>
+            <div class="amount">
+              <span id="totalPersonnelle-julie">0,00</span>
+              <span class="currency">€</span>
+            </div>
           </div>
         </div>
+      </section>
+
+      <!-- Section Paul -->
+      <section class="person-section paul-section">
+        <h2 class="person-title">👨‍💼 Paul</h2>
+        <form class="form-grid" onsubmit="ajouterDepense(event, 'paul')">
+          <div class="input-group">
+            <label for="commune-paul" class="label">Dépense commune</label>
+            <input 
+              type="number" 
+              id="commune-paul" 
+              inputmode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+              autocomplete="off"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="personnelle-paul" class="label">Dépenses perso de Julie</label>
+            <input 
+              type="number" 
+              id="personnelle-paul" 
+              inputmode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+              autocomplete="off"
+            />
+          </div>
+          
+          <button type="submit" class="add-button">
+            <span class="button-text">Ajouter</span>
+            <span class="button-icon">+</span>
+          </button>
+        </form>
         
-        <div class="total-card personnelle">
-          <div class="label">Total personnelle</div>
-          <div class="amount">
-            <span id="totalPersonnelle">0,00</span>
-            <span class="currency">€</span>
+        <div class="totals">
+          <div class="total-card commune">
+            <div class="label">Total commune</div>
+            <div class="amount">
+              <span id="totalCommune-paul">0,00</span>
+              <span class="currency">€</span>
+            </div>
+          </div>
+          
+          <div class="total-card personnelle julie-on-paul">
+            <div class="label">Julie chez Paul</div>
+            <div class="amount">
+              <span id="totalPersonnelle-paul">0,00</span>
+              <span class="currency">€</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Global Summary -->
+      <section class="summary-section">
+        <h2 class="summary-title">📊 Résumé Global</h2>
+        <div class="totals summary-totals">
+          <div class="total-card global commune">
+            <div class="label">Total Commune Global</div>
+            <div class="amount">
+              <span id="totalCommuneGlobal">0,00</span>
+              <span class="currency">€</span>
+            </div>
+          </div>
+          
+          <div class="total-card global balance">
+            <div class="label">Solde Final</div>
+            <div class="amount">
+              <span id="balanceAmount">0,00</span>
+              <span class="currency">€</span>
+            </div>
+            <div class="balance-info">
+              <span id="balanceInfo">Parfaitement équilibré</span>
+            </div>
+          </div>
+        </div>
+      </section>
       
       <div class="actions">
         <button type="button" class="reset-button" onclick="resetTotals()">
