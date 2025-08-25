@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculette Dépenses</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>Calculette Dépenses</h2>
+  <div>
+    <label>Dépense commune (€)</label>
+    <input type="number" id="commune" />
+  </div>
+  <div>
+    <label>Dépense personnelle (€)</label>
+    <input type="number" id="personnelle" />
+  </div>
+  <button onclick="ajouterDepense()">Ajouter</button>
+  <div>
+    <p>Total commune : <span id="totalCommune">0</span> €</p>
+    <p>Total personnelle : <span id="totalPersonnelle">0</span> €</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
